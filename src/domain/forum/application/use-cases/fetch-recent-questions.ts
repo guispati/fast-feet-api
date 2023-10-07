@@ -1,5 +1,5 @@
 import { Either, right } from "@/core/either";
-import { Question } from "../../enterprise/entities/question";
+import { Question } from "../../enterprise/entities/package";
 import { QuestionsRepository } from "../repositories/questions-repository";
 import { Injectable } from "@nestjs/common";
 
