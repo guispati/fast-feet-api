@@ -29,7 +29,7 @@ describe('Read Notification', () => {
         );
     });
 
-    it('should not be able to reaad a notification from another user', async () => {
+    it('should not be able to read a notification from another user', async () => {
         const notification = makeNotification({
             recipientId: new UniqueEntityID('recipient-1'),
         });
