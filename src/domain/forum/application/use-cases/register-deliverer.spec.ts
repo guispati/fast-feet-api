@@ -19,6 +19,7 @@ describe('Register Deliverer', () => {
             name: 'John Doe',
             cpf: '123.123.123-12',
             password: '123456',
+            location: 'City 1'
         });
     
         expect(result.isRight()).toBe(true);
@@ -32,9 +33,10 @@ describe('Register Deliverer', () => {
             name: 'John Doe',
             cpf: '123.123.123-12',
             password: '123456',
+            location: 'City 1'
         });
         
-        const hashedPassword = await fakeHasher.hash('123456')
+        const hashedPassword = await fakeHasher.hash('123456');
     
         expect(result.isRight()).toBe(true);
         expect(inMemoryDeliverersRepository.items[0].password).toEqual(hashedPassword);

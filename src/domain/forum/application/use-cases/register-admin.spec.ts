@@ -34,7 +34,7 @@ describe('Register Admin', () => {
             password: '123456',
         });
         
-        const hashedPassword = await fakeHasher.hash('123456')
+        const hashedPassword = await fakeHasher.hash('123456');
     
         expect(result.isRight()).toBe(true);
         expect(inMemoryAdminsRepository.items[0].password).toEqual(hashedPassword);

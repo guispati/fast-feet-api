@@ -14,7 +14,7 @@ import { GetQuestionBySlugUseCase } from "@/domain/forum/application/use-cases/g
 import { EditQuestionController } from "./controllers/edit-question.controller";
 import { EditQuestionUseCase } from "@/domain/forum/application/use-cases/edit-question";
 import { DeleteQuestionController } from "./controllers/delete-question.controller";
-import { DeleteQuestionUseCase } from "@/domain/forum/application/use-cases/delete-question";
+import { DeleteQuestionUseCase } from "@/domain/forum/application/use-cases/delete-deliverer";
 import { AnswerQuestionController } from "./controllers/answer-question.controller";
 import { AnswerQuestionUseCase } from "@/domain/forum/application/use-cases/answer-question";
 import { EditAnswerController } from "./controllers/edit-answer.controller";

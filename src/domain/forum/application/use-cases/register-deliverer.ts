@@ -9,6 +9,7 @@ interface RegisterDelivererUseCaseRequest {
     name: string;
     cpf: string;
     password: string;
+    location: string;
 }
 
 type RegisterDelivererUseCaseResponse = Either<
@@ -29,6 +30,7 @@ export class RegisterDelivererUseCase {
         name,
         cpf,
         password,
+        location,
     }: RegisterDelivererUseCaseRequest): Promise<RegisterDelivererUseCaseResponse> {
         const delivererWithSameCpf = await this.deliverersRepository.findByCpf(cpf);
 
@@ -42,6 +44,7 @@ export class RegisterDelivererUseCase {
             name,
             cpf,
             password: hashedPassword,
+            location
         });
 
         await this.deliverersRepository.create(deliverer);

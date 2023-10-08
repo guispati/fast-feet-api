@@ -3,7 +3,7 @@ import { Optional } from "@/core/types/optional";
 import { AggregateRoot } from "@/core/entities/aggregate-root";
 import { PackageStatusChangedEvent } from "./events/package-status-changed-event";
 
-export type StatusType = "waiting" | "withdrawn" | "delivered";
+export type StatusType = "created" | "waiting" | "withdrawn" | "delivered" | "returned";
 
 export interface PackageProps {
     recipientId: UniqueEntityID;
@@ -11,6 +11,7 @@ export interface PackageProps {
     status: StatusType;
     postedAt: Date;
     pickedUpAt?: Date | null;
+    delivererId?: UniqueEntityID;
     deliveredAt?: Date | null;
     attachmentId?: UniqueEntityID | null;
 }
@@ -18,6 +19,10 @@ export interface PackageProps {
 export class Package extends AggregateRoot<PackageProps> {
     get recipientId() {
         return this.props.recipientId;
+    }
+
+    set recipientId(recipientId: UniqueEntityID) {
+        this.props.recipientId = recipientId;
     }
 
     get name() {
@@ -37,6 +42,20 @@ export class Package extends AggregateRoot<PackageProps> {
         this.updateStatus();
     }
 
+    public setStatusWithdrawn(delivererId: UniqueEntityID) {
+        this.props.status = 'withdrawn';
+        this.props.pickedUpAt = new Date();
+        this.props.delivererId = delivererId;
+        this.updateStatus();
+    }
+
+    public setStatusDelivered(attachmentId: UniqueEntityID) {
+        this.props.status = 'delivered';
+        this.props.deliveredAt = new Date();
+        this.props.attachmentId = attachmentId;
+        this.updateStatus();
+    }
+
     get postedAt() {
         return this.props.postedAt;
     }
@@ -49,34 +68,25 @@ export class Package extends AggregateRoot<PackageProps> {
         return this.props.deliveredAt;
     }
 
+    get delivererId() {
+        return this.props.delivererId;
+    }
+
+    get attachmentId() {
+        return this.props.attachmentId;
+    }
+
     private updateStatus() {
-        switch(this.props.status) {
-            case 'withdrawn':
-                this.props.pickedUpAt = new Date();
-            break;
-
-            case 'delivered':
-                this.props.deliveredAt = new Date();
-            break;
-        }
-
         this.addDomainEvent(new PackageStatusChangedEvent(this));
     }
 
-    get attachment() {
-        return this.props.attachmentId
-    }
-
-    set attachment(attachmentId: UniqueEntityID | undefined | null) {
-        this.props.attachmentId = attachmentId;
-    }
-
     static create(
-        props: Optional<PackageProps, 'pickedUpAt' | 'deliveredAt' | 'attachmentId'>,
+        props: Optional<PackageProps, 'postedAt' | 'pickedUpAt' | 'deliveredAt' | 'attachmentId' | 'delivererId' | 'status'>,
         id?: UniqueEntityID
     ) {
         const newPackage = new Package({
             ...props,
+            status: props.status ?? 'created',
             postedAt: props.postedAt ?? new Date(),
         }, id);
 

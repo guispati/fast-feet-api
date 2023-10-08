@@ -11,9 +11,11 @@ export function makeDeliverer(
 ) {
     const deliverer = Deliverer.create(
         {
+            delivererId: new UniqueEntityID(),
             name: faker.person.fullName(),
-            cpf: faker.internet.ip.toString(),
+            cpf: faker.internet.ip(),
             password: faker.internet.password(),
+            location: faker.location.city(),
             ...override,
         },
         id,
