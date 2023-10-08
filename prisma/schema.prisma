@@ -8,86 +8,72 @@ datasource db {
 }
 
 enum UserRole {
-  STUDENT
-  INSTRUCTOR
+  ADMIN
+  DELIVERER
 }
 
 model User {
   id       String   @id @default(uuid())
   name     String
-  email    String   @unique
+  cpf      String   @unique
+  location String?
   password String
-  role     UserRole @default(STUDENT)
+  role     UserRole @default(DELIVERER)
 
-  questions     Question[]
-  answers       Answer[]
-  comments      Comment[]
-  notifications Notification[]
+  package      Package[]
+  notification Notification[]
 
   @@map("users")
 }
 
-model Question {
-  id           String    @id @default(uuid())
-  title        String
-  slug         String    @unique
-  content      String
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime? @updatedAt @map("updated_at")
-  authorId     String    @map("author_id")
-  bestAnswerId String?   @unique @map("best_answer_id")
-
-  author      User         @relation(fields: [authorId], references: [id])
-  bestAnswer  Answer?      @relation("bestAnswer", fields: [bestAnswerId], references: [id])
-  answers     Answer[]
-  comments    Comment[]
-  attachments Attachment[]
-
-  @@map("questions")
+enum StatusType {
+  created
+  waiting
+  withdrawn
+  delivered
+  returned
 }
 
-model Answer {
-  id         String    @id @default(uuid())
-  content    String
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime? @updatedAt @map("updated_at")
-  authorId   String    @map("author_id")
-  questionId String    @map("question_iid")
+model Package {
+  id          String     @id @default(uuid())
+  name        String
+  status      StatusType @default(created)
+  recipientId String     @map("recipient_id")
 
-  author       User         @relation(fields: [authorId], references: [id])
-  bestAnswerOn Question?    @relation("bestAnswer")
-  question     Question     @relation(fields: [questionId], references: [id])
-  comments     Comment[]
-  attachments  Attachment[]
+  postedAt DateTime @map("posted_at")
 
-  @@map("answers")
+  pickedUpAt  DateTime? @map("picked_up_at")
+  delivererId String?   @map("deliverer_id")
+
+  deliveredAt  DateTime? @map("delivered_at")
+  attachmentId String?   @map("attachment_id")
+
+  recipient  Recipient   @relation(fields: [recipientId], references: [id])
+  attachment Attachment? @relation(fields: [attachmentId], references: [id])
+  deliverer  User?       @relation(fields: [delivererId], references: [id])
+
+  @@map("packages")
 }
 
-model Comment {
-  id         String    @id @default(uuid())
-  content    String
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime? @updatedAt @map("updated_at")
-  authorId   String    @map("author_id")
-  questionId String?   @map("question_id")
-  answerId   String?   @map("answer_id")
+model Recipient {
+  id      String @id @default(uuid())
+  name    String
+  address String
+  city    String
+  state   String
+  zipcode String
 
-  author   User      @relation(fields: [authorId], references: [id])
-  question Question? @relation(fields: [questionId], references: [id])
-  answer   Answer?   @relation(fields: [answerId], references: [id])
+  package Package[]
 
-  @@map("comments")
+  @@map("recipients")
 }
 
 model Attachment {
-  id         String  @id @default(uuid())
-  title      String
-  url        String
-  questionId String? @map("question_id")
-  answerId   String? @map("answer_id")
+  id    String @id @default(uuid())
+  title String
+  url   String
 
-  question Question? @relation(fields: [questionId], references: [id])
-  answer   Answer?   @relation(fields: [answerId], references: [id])
+  package Package[]
 
   @@map("attachments")
 }

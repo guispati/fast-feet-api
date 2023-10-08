@@ -4,6 +4,7 @@ import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Deliverer, DelivererProps } from '@/domain/forum/enterprise/entities/deliverer';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';
+import { PrismaDelivererMapper } from '@/infra/database/prisma/mappers/prisma-deliverer-mapper';
 
 export function makeDeliverer(
     override: Partial<DelivererProps> = {},
@@ -24,17 +25,17 @@ export function makeDeliverer(
     return deliverer;
 }
 
-// @Injectable()
-// export class DelivererFactory {
-//     constructor(private prisma: PrismaService) {}
+@Injectable()
+export class DelivererFactory {
+    constructor(private prisma: PrismaService) {}
 
-//     async makePrismaDeliverer(data: Partial<DelivererProps> = {}): Promise<Deliverer> {
-//         const deliverer = makeDeliverer(data);
+    async makePrismaDeliverer(data: Partial<DelivererProps> = {}): Promise<Deliverer> {
+        const deliverer = makeDeliverer(data);
 
-//         await this.prisma.user.create({
-//             data: PrismaDelivererMapper.toPrisma(deliverer),
-//         });
+        await this.prisma.user.create({
+            data: PrismaDelivererMapper.toPrisma(deliverer),
+        });
 
-//         return deliverer;
-//     }
-// }
+        return deliverer;
+    }
+}

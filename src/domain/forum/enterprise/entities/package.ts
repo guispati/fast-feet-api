@@ -11,7 +11,7 @@ export interface PackageProps {
     status: StatusType;
     postedAt: Date;
     pickedUpAt?: Date | null;
-    delivererId?: UniqueEntityID;
+    delivererId?: UniqueEntityID | null;
     deliveredAt?: Date | null;
     attachmentId?: UniqueEntityID | null;
 }
